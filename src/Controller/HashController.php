@@ -2,40 +2,55 @@
 
 namespace ZivHashGen\Controller;
 
-use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use UnexpectedValueException;
+use ZivHashGen\Service\Hash\GeneratorFactory;
 
-class HashController implements ControllerProviderInterface
+class HashController
 {
-    public function connect(Application $app)
-    {
-        /** @var \Silex\ControllerCollection $factory */
-        $factory = $app['controllers_factory'];
-        $factory->get('/{algorithm}', 'ZivHashGen\Controller\HashController::showAction');
+    private $availableAlgorithms;
 
-        return $factory;
+    /**
+     * @var GeneratorFactory
+     */
+    private $generatorFactory;
+
+    /**
+     * HashController constructor.
+     *
+     * @param GeneratorFactory $generatorFactory
+     * @param array $availableAlgorithms
+     */
+    public function __construct(GeneratorFactory $generatorFactory, array $availableAlgorithms)
+    {
+        $this->generatorFactory = $generatorFactory;
+        $this->availableAlgorithms = $availableAlgorithms;
     }
 
-    public function showAction(Application $app, $algorithm)
+    /**
+     * @param $algorithm
+     *
+     * @return JsonResponse
+     */
+    public function get($algorithm)
     {
-        if (!in_array(strtolower($algorithm), $app['zhg.available_algorithms'])) {
-            $app->abort(404, "Algorithm {$algorithm} not found.");
+        $algorithm = strtolower($algorithm);
+
+        if (!in_array($algorithm, $this->availableAlgorithms)) {
+            throw new UnexpectedValueException("Algorithm {$algorithm} not found.");
         }
 
         // TODO: allow user params for seed and salt
 
-        /** @var \ZivHashGen\Service\Hash\GeneratorFactory $factory */
-        $factory = $app['zhg.hash_generator_factory'];
-        $params = $factory->packageParams($algorithm, '', '');
-        $generator = $factory->create($params);
+        $params = $this->generatorFactory->packageParams($algorithm, '', '');
+        $generator = $this->generatorFactory->create($params);
 
         return new JsonResponse(
             [
-                "result"    => $generator->generate(),
+                "result" => $generator->generate(),
                 "algorithm" => $generator->getAlgorithm()
-            ],
-            JsonResponse::HTTP_OK
+            ]
         );
     }
 }

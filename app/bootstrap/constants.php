@@ -1,6 +1,6 @@
 <?php
 
-define('BASE_PATH',   __DIR__ . '/../');
+define('BASE_PATH',   __DIR__ . '/../../');
 define('APP_PATH',    BASE_PATH . 'app/');
 define('SRC_PATH',    BASE_PATH . 'src/');
 define('CONFIG_PATH', BASE_PATH . 'config/');
