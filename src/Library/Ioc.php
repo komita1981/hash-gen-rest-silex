@@ -33,24 +33,24 @@ class Ioc
 
     private function addControllers()
     {
-        $this->app['zhg.controller.hash'] = $this->app->share(function () {
+        $this->app['zhg.controller.hash'] = function () {
             return new HashController($this->app['zhg.hash_generator_factory'], $this->app['zhg.available_algorithms']);
-        });
+        };
     }
 
     private function addConfig()
     {
-        $this->app['zhg.hash_generator_factory'] = $this->app->share(function () {
+        $this->app['zhg.hash_generator_factory'] = function () {
             return new GeneratorFactory($this->app);
-        });
+        };
 
         $this->app['zhg.available_algorithms'] = ['md5'];
     }
 
     private function addServices()
     {
-        $this->app['zhg.hash_generator_factory'] = $this->app->share(function () {
+        $this->app['zhg.hash_generator_factory'] = function () {
             return new GeneratorFactory($this->app);
-        });
+        };
     }
 }

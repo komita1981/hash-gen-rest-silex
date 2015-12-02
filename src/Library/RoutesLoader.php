@@ -26,7 +26,7 @@ class RoutesLoader
 
         $api = $this->app["controllers_factory"];
 
-        $api->get('/api/v1/hash', 'controller.hash:get');
+        $api->get('/api/v1/hash/{algorithm}', 'zhg.controller.hash:get');
 
         $this->app->mount('/', $api);
 

@@ -8,15 +8,15 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 // create instance of Silex Application
 $app = new Application();
 
-if (APPLICATION_ENV === 'development') {
+include __DIR__ . '/constants.php';
+
+if (APPLICATION_ENV === DEVELOPMENT_ENV) {
     $app['debug'] = true;
 }
 
-if (APPLICATION_ENV === 'production') {
+if (APPLICATION_ENV === PRODUCTION_ENV) {
     ini_set('display_errors', 0);
 }
-
-include __DIR__ . '/constants.php';
 
 include __DIR__ . '/ioc.php';
 
